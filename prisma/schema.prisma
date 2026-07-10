@@ -92,3 +92,9 @@ model Education {
   startYear Int
   endYear   Int
 }
+
+model SiteSettings {
+  id              String  @id @default("global")
+  heroPortraitUrl String?
+  aboutPhotoUrl   String?
+}

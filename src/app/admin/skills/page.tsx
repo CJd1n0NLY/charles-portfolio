@@ -35,11 +35,11 @@ export default async function SkillsAdmin() {
               <h3 className="font-mono text-muted tracking-widest text-xs uppercase">{category}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {categorySkills.map(skill => (
-                  <div key={skill.id} className="flex items-center justify-between p-3 border border-surface/50 bg-surface/20">
-                    <span className="text-sm">{skill.name}</span>
-                    <form action={deleteSkill}>
+                  <div key={skill.id} className="flex items-center justify-between p-3 border border-surface/50 bg-surface/20 gap-4 min-w-0">
+                    <span className="text-sm truncate">{skill.name}</span> {/* min-w-0 and truncate prevent overlap */}
+                    <form action={deleteSkill} className="shrink-0">
                       <input type="hidden" name="id" value={skill.id} />
-                      <button type="submit" className="text-accent hover:text-red-500 font-mono text-xs">DEL</button>
+                      <button type="submit" className="text-muted hover:text-red-500 font-mono text-xs cursor-pointer px-2 py-1 transition-colors">DEL</button>
                     </form>
                   </div>
                 ))}

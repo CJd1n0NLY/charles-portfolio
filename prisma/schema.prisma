@@ -7,25 +7,28 @@ datasource db {
 }
 
 model Project {
-  id            String         @id @default(cuid())
-  slug          String         @unique
-  chapter       String         // "ACADEMIC" | "INTERNSHIP" | "CAPSTONE" | "PERSONAL"
-  title         String
-  tagline       String
-  status        String         @default("DRAFT") // "DRAFT" | "PUBLISHED"
-  order         Int            @default(0)
-  heroImageUrl  String?
-  heroImageAlt  String?        // Added per accessibility guardrails
-  liveUrl       String?
-  repoUrl       String?
-  problem       String?        
-  approach      String?        
-  outcome       String?        
-  techStack     String?        // Stored as comma-separated string for SQLite compatibility
-  challenges    Challenge[]
-  gallery       GalleryImage[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id           String         @id @default(cuid())
+  slug         String         @unique
+  chapter      String         // "ACADEMIC", "INTERNSHIP", "CAPSTONE", "PERSONAL"
+  title        String
+  tagline      String
+  status       String         @default("DRAFT") // "DRAFT" | "PUBLISHED"
+  buildStatus  String         @default("IN_PROGRESS") // Stored as string for SQLite: "SHIPPED" | "IN_PROGRESS" | "ARCHIVED"
+  
+  problem      String?        // Removed @db.Text
+  approach     String?        // Removed @db.Text
+  outcome      String?        // Removed @db.Text
+  techStack    String?
+  liveUrl      String?
+  repoUrl      String?
+  heroImageUrl String?
+  
+  order        Int            @default(0)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  challenges   Challenge[]
+  gallery      GalleryImage[]
 }
 
 model Challenge {
@@ -62,14 +65,32 @@ model Skill {
 }
 
 model WorkExperience {
-  id               String    @id @default(cuid())
-  company          String
-  role             String
-  location         String?
-  startDate        DateTime
-  endDate          DateTime?
-  responsibilities String    // Stored as a JSON string array for SQLite compatibility
-  order            Int       @default(0)
+  id              String             @id @default(cuid())
+  slug            String            @unique
+  company         String
+  role            String
+  location        String?
+  startDate       DateTime
+  endDate         DateTime?
+  supervisorName  String?
+  tagline         String?
+  context         String?            
+  roleProgression String?            
+  outcome         String?            
+  evaluationScore Int?
+  evaluationQuote String?            
+  order           Int                @default(0)
+  contributions   WorkContribution[]
+}
+
+model WorkContribution {
+  id               String         @id @default(cuid())
+  title            String
+  description      String         
+  order            Int            @default(0)
+  
+  workExperienceId String
+  workExperience   WorkExperience @relation(fields: [workExperienceId], references: [id], onDelete: Cascade)
 }
 
 model Certificate {

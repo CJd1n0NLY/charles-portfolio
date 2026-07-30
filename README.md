@@ -34,3 +34,85 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+```
+charles-portfolio
+├─ AGENTS.md
+├─ CLAUDE.md
+├─ DESIGN.md
+├─ dev.db
+├─ eslint.config.mjs
+├─ next.config.ts
+├─ package-lock.json
+├─ package.json
+├─ postcss.config.mjs
+├─ prisma
+│  ├─ dev.db
+│  ├─ migrations
+│  │  ├─ 20260710072453_init
+│  │  │  └─ migration.sql
+│  │  └─ migration_lock.toml
+│  ├─ schema.prisma
+│  └─ seed.ts
+├─ prisma.config.ts
+├─ public
+│  ├─ file.svg
+│  ├─ globe.svg
+│  ├─ next.svg
+│  ├─ vercel.svg
+│  └─ window.svg
+├─ README.md
+├─ src
+│  ├─ app
+│  │  ├─ about
+│  │  │  └─ page.tsx
+│  │  ├─ admin
+│  │  │  ├─ actions.ts
+│  │  │  ├─ certificates
+│  │  │  │  ├─ actions.ts
+│  │  │  │  ├─ CertificatesClient.tsx
+│  │  │  │  └─ page.tsx
+│  │  │  ├─ education
+│  │  │  │  └─ page.tsx
+│  │  │  ├─ experience
+│  │  │  │  ├─ ExperienceClient.tsx
+│  │  │  │  └─ page.tsx
+│  │  │  ├─ login
+│  │  │  │  └─ page.tsx
+│  │  │  ├─ page.tsx
+│  │  │  ├─ projects
+│  │  │  │  └─ [id]
+│  │  │  │     ├─ page.tsx
+│  │  │  │     └─ ProjectFormClient.tsx
+│  │  │  ├─ settings
+│  │  │  │  └─ page.tsx
+│  │  │  └─ skills
+│  │  │     └─ page.tsx
+│  │  ├─ api
+│  │  │  ├─ auth
+│  │  │  │  └─ [...nextauth]
+│  │  │  │     └─ route.ts
+│  │  │  └─ upload
+│  │  │     └─ route.ts
+│  │  ├─ contact
+│  │  │  └─ page.tsx
+│  │  ├─ favicon.ico
+│  │  ├─ globals.css
+│  │  ├─ layout.tsx
+│  │  ├─ page.tsx
+│  │  ├─ sitemap.ts
+│  │  └─ work
+│  │     └─ [slug]
+│  │        └─ page.tsx
+│  ├─ components
+│  │  ├─ ActionForm.tsx
+│  │  ├─ BootSequence.tsx
+│  │  ├─ LogoutButton.tsx
+│  │  ├─ Navbar.tsx
+│  │  └─ TimelineScroll.tsx
+│  ├─ lib
+│  │  └─ prisma.ts
+│  └─ middleware.ts
+└─ tsconfig.json
+
+```

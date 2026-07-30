@@ -22,14 +22,32 @@ export async function toggleProjectStatus(formData: FormData) {
 
 export async function saveProject(formData: FormData) {
   const id = formData.get("id") as string;
+
   const challengesStr = formData.get("challenges") as string;
-  const challenges = JSON.parse(challengesStr || "[]");
+  const rawChallenges = JSON.parse(challengesStr || "[]");
+  // Strip id/projectId — Prisma infers these from the relation on nested create
+  const challenges = rawChallenges.map((c: any) => ({
+    title: c.title,
+    description: c.description,
+    order: c.order,
+  }));
+
+  const galleryStr = formData.get("gallery") as string;
+  const rawGallery = JSON.parse(galleryStr || "[]");
+  const gallery = rawGallery.map((g: any) => ({
+    url: g.url,
+    caption: g.caption,
+    altText: g.caption || "", // schema requires altText; fallback until a dedicated field exists
+    order: g.order,
+  }));
 
   const data = {
     title: formData.get("title") as string,
     tagline: formData.get("tagline") as string,
     chapter: formData.get("chapter") as string,
     status: formData.get("status") as string,
+    buildStatus: formData.get("buildStatus") as string,
+    heroImageUrl: formData.get("heroImageUrl") as string,
     problem: formData.get("problem") as string,
     approach: formData.get("approach") as string,
     outcome: formData.get("outcome") as string,
@@ -39,17 +57,26 @@ export async function saveProject(formData: FormData) {
   };
 
   if (id === "new") {
-    // Generate slug from title
     const slug = data.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
     await prisma.project.create({
-      data: { ...data, slug, challenges: { create: challenges } },
+      data: {
+        ...data,
+        slug,
+        challenges: { create: challenges },
+        gallery: { create: gallery },
+      },
     });
   } else {
-    // Delete old challenges and recreate them to handle reordering/removal simply
+    // Delete-and-recreate for both relations, same pattern you already use for challenges
     await prisma.challenge.deleteMany({ where: { projectId: id } });
+    await prisma.galleryImage.deleteMany({ where: { projectId: id } });
     await prisma.project.update({
       where: { id },
-      data: { ...data, challenges: { create: challenges } },
+      data: {
+        ...data,
+        challenges: { create: challenges },
+        gallery: { create: gallery },
+      },
     });
   }
 
@@ -90,22 +117,57 @@ export async function deleteSkill(formData: FormData) {
 // --- WORK EXPERIENCE ACTIONS ---
 export async function saveExperience(formData: FormData) {
   const id = formData.get("id") as string;
+  
   const data = {
+    slug: formData.get("slug") as string,
     company: formData.get("company") as string,
     role: formData.get("role") as string,
     location: formData.get("location") as string,
     startDate: new Date(formData.get("startDate") as string),
     endDate: formData.get("endDate") ? new Date(formData.get("endDate") as string) : null,
-    responsibilities: formData.get("responsibilities") as string, // JSON string
+    supervisorName: formData.get("supervisorName") as string,
+    tagline: formData.get("tagline") as string,
+    context: formData.get("context") as string,
+    roleProgression: formData.get("roleProgression") as string,
+    outcome: formData.get("outcome") as string,
+    evaluationQuote: formData.get("evaluationQuote") as string,
   };
 
+  const rawScore = formData.get("evaluationScore") as string;
+  const evaluationScore = rawScore ? parseInt(rawScore, 10) : null;
+
+  const rawContributions = formData.get("contributions") as string;
+  const contributions = JSON.parse(rawContributions || "[]").map((c: any) => ({
+    title: c.title,
+    description: c.description,
+    order: c.order,
+  }));
+
   if (id === "new") {
-    await prisma.workExperience.create({ data });
+    await prisma.workExperience.create({
+      data: {
+        ...data,
+        evaluationScore,
+        contributions: { create: contributions },
+      },
+    });
   } else {
-    await prisma.workExperience.update({ where: { id }, data });
+    await prisma.workExperience.update({
+      where: { id },
+      data: {
+        ...data,
+        evaluationScore,
+        contributions: {
+          deleteMany: {}, // Clear old nested records
+          create: contributions, // Insert updated nested records
+        },
+      },
+    });
   }
+
   revalidatePath("/admin/experience");
   revalidatePath("/");
+  revalidatePath(`/experience/${data.slug}`);
 }
 
 export async function deleteExperience(formData: FormData) {

@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { uploadAndAnalyzeCertificate } from "./actions"; // The Vision AI action we wrote earlier
 import { updateCertificateStatus, deleteCertificate } from "../actions";
+import toast from "react-hot-toast";
 
 // In a real implementation, you would fetch these from the server. 
 // For brevity in this client component framework, we assume they are passed as props or fetched via SWR.

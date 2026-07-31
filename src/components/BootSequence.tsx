@@ -48,7 +48,7 @@ export default function BootSequence({ academicCount, internString, personalShip
         <span 
           key={i} 
           // 4. Added Optional Chaining (line?.startsWith) as a final defensive UI guard
-          className={`${line?.startsWith("$") ? "text-[#E1EADB]" : "text-ink-soft"} break-all`}
+          className={`${line?.startsWith("$") ? "text-pass" : "text-ink-soft"} break-all`}
         >
           {line}
         </span>

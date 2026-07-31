@@ -1,183 +1,88 @@
-import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, ExternalLink} from "lucide-react";
-import { FaGithub } from "react-icons/fa";
-import { Metadata } from "next";
+import { prisma } from '@/lib/prisma';
+import { notFound } from 'next/navigation';
+import Badge from '@/components/Badge';
 
-export async function generateMetadata({
-  params,
-}: {
+type PageProps = {
   params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+};
+
+export default async function WorkDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  
-  const project = await prisma.project.findUnique({
-    where: { slug },
-  });
+  const project = await prisma.project.findUnique({ where: { slug } });
 
-  if (!project || project.status !== "PUBLISHED") {
-    return { title: "Project Not Found" };
-  }
+  if (!project) notFound();
 
-  return {
-    title: `${project.title} | Charles's Portfolio`,
-    description: project.tagline,
-    openGraph: {
-      title: project.title,
-      description: project.tagline,
-      type: "article",
-      /* We will use a fallback image if the project doesn't have a hero image yet */
-      images: project.heroImageUrl ? [project.heroImageUrl] : [],
-    },
-  };
-}
-
-// In Next.js 15+, params in Server Components are Promises that must be awaited
-export default async function ProjectShowroom({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const resolvedParams = await params;
-  const { slug } = resolvedParams;
-
-  // Fetch the project and its related data
-  const project = await prisma.project.findUnique({
-    where: { slug },
-    include: {
-      challenges: {
-        orderBy: { order: "asc" },
-      },
-      gallery: {
-        orderBy: { order: "asc" },
-      },
-    },
-  });
-
-  // 404 if the project doesn't exist or isn't published
-  if (!project || project.status !== "PUBLISHED") {
-    notFound();
-  }
-
-  // Parse the comma-separated tech stack string back into an array
-  const stack = project.techStack
-    ? project.techStack.split(",").map((s) => s.trim())
-    : [];
+  const tags = project.techStack ? project.techStack.split(',') : [];
 
   return (
-    <article className="max-w-3xl mx-auto px-6 py-20 w-full space-y-24">
-      {/* Navigation */}
-      <nav>
-        <Link
-          href="/"
-          className="inline-flex items-center text-sm font-mono tracking-wider text-muted hover:text-accent transition-colors duration-200"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          RETURN TO TIMELINE
-        </Link>
-      </nav>
-
-      {/* Hero Section */}
-      <header className="space-y-8">
-        <div className="space-y-4">
-          <span className="text-xs font-mono tracking-widest text-accent uppercase block">
-            {project.chapter} CHAPTER
-          </span>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-primary leading-tight">
-            {project.title}
-          </h1>
-          <p className="text-xl text-muted leading-relaxed max-w-2xl">
-            {project.tagline}
-          </p>
-        </div>
-
-        {/* Action Links */}
-        {(project.liveUrl || project.repoUrl) && (
-          <div className="flex flex-wrap gap-4 pt-4">
-            {project.liveUrl && (
-              <a
-                href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center px-5 py-2.5 bg-primary text-canvas text-sm font-semibold rounded hover:bg-primary/90 transition-colors"
-              >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                View Live System
-              </a>
-            )}
-            {project.repoUrl && (
-              <a
-                href={project.repoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center px-5 py-2.5 bg-surface border border-surface hover:border-muted text-primary text-sm font-semibold rounded transition-colors"
-              >
-                <FaGithub className="w-4 h-4 mr-2" />
-                Source Code
-              </a>
-            )}
+    <article className="max-w-3xl mx-auto px-6 py-24">
+      <header className="mb-12">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-4">
+          <h1 className="text-4xl font-display font-bold text-ink">{project.title}</h1>
+          <div className="self-start sm:self-auto">
+            <Badge status={project.buildStatus} />
           </div>
-        )}
-
-        {/* Tech Stack Chips */}
-        {stack.length > 0 && (
-          <div className="flex flex-wrap gap-2 pt-6">
-            {stack.map((tech) => (
-              <span
-                key={tech}
-                className="px-3 py-1 text-xs font-mono text-muted bg-surface/50 border border-surface rounded-full"
-              >
-                {tech}
+        </div>
+        <p className="text-lg text-ink-soft mb-8 leading-relaxed max-w-2xl">
+          {project.tagline}
+        </p>
+        
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 text-xs font-mono text-ink-soft">
+            {tags.map(tag => (
+              <span key={tag} className="px-2.5 py-1.5 bg-line/30 rounded-md">
+                {tag.trim()}
               </span>
             ))}
           </div>
         )}
       </header>
 
-      {/* Main Content Body */}
-      <div className="space-y-20 border-t border-surface pt-16">
-        {project.problem && (
-          <section className="space-y-6">
-            <h2 className="text-2xl font-bold tracking-tight text-primary">The Problem Space</h2>
-            <div className="prose prose-invert prose-slate max-w-none text-muted leading-relaxed">
-              {project.problem}
-            </div>
-          </section>
-        )}
+      <div className="bg-card border border-line rounded-xl p-8 md:p-12">
+        <div className="flex flex-col gap-12">
+          {project.problem && (
+            <section>
+              <h3 className="text-xl font-display font-bold text-ink mb-4 flex items-center gap-2">
+                <span className="w-4 h-px bg-line inline-block" />
+                The Problem
+              </h3>
+              {/* whitespace-pre-wrap ensures database line breaks render as real paragraphs */}
+              <p className="text-ink-soft leading-relaxed whitespace-pre-wrap">
+                {project.problem}
+              </p>
+            </section>
+          )}
+          
+          {project.approach && (
+            <section>
+              <h3 className="text-xl font-display font-bold text-ink mb-4 flex items-center gap-2">
+                <span className="w-4 h-px bg-line inline-block" />
+                The Approach
+              </h3>
+              <p className="text-ink-soft leading-relaxed whitespace-pre-wrap">
+                {project.approach}
+              </p>
+            </section>
+          )}
+          
+          {project.outcome && (
+            <section>
+              <h3 className="text-xl font-display font-bold text-ink mb-4 flex items-center gap-2">
+                <span className="w-4 h-px bg-line inline-block" />
+                The Outcome
+              </h3>
+              <p className="text-ink-soft leading-relaxed whitespace-pre-wrap">
+                {project.outcome}
+              </p>
+            </section>
+          )}
 
-        {project.approach && (
-          <section className="space-y-6">
-            <h2 className="text-2xl font-bold tracking-tight text-primary">Engineering Approach</h2>
-            <div className="prose prose-invert prose-slate max-w-none text-muted leading-relaxed">
-              {project.approach}
-            </div>
-          </section>
-        )}
-
-        {/* Challenges Array */}
-        {project.challenges.length > 0 && (
-          <section className="space-y-8">
-            <h2 className="text-2xl font-bold tracking-tight text-primary">Critical Challenges Resolved</h2>
-            <div className="grid gap-6">
-              {project.challenges.map((challenge) => (
-                <div key={challenge.id} className="p-6 rounded-lg bg-surface/30 border border-surface/60">
-                  <h3 className="text-lg font-bold text-primary mb-2">{challenge.title}</h3>
-                  <p className="text-muted leading-relaxed text-sm">{challenge.description}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {project.outcome && (
-          <section className="space-y-6">
-            <h2 className="text-2xl font-bold tracking-tight text-primary">Outcome & Next Steps</h2>
-            <div className="prose prose-invert prose-slate max-w-none text-muted leading-relaxed">
-              {project.outcome}
-            </div>
-          </section>
-        )}
+          {!project.problem && !project.approach && !project.outcome && (
+            <p className="text-ink-soft font-mono text-sm text-center py-8">
+              $ documentation pending
+            </p>
+          )}
+        </div>
       </div>
     </article>
   );

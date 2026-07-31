@@ -1,183 +1,181 @@
-import { prisma } from "@/lib/prisma";
-import Link from "next/link";
-import BootSequence from "../components/BootSequence"; 
-import Navbar from "@/components/Navbar";
+import { prisma } from '@/lib/prisma';
+import BootSequence from '@/components/BootSequence';
+import ProjectCard from '@/components/ProjectCard';
 
 export default async function HomePage() {
-  // Parallel real-time data fetching
-  const [
-    allProjects,
-    intros,
-    internships, // Removed take: 1 so it can list multiple roles in the suite
-    education,
-    settings
-  ] = await Promise.all([
-    prisma.project.findMany({ orderBy: { order: "asc" } }),
+  const [projects, chapters, experiences, education, settings] = await Promise.all([
+    prisma.project.findMany({ where: { status: 'PUBLISHED' } }),
     prisma.chapterIntro.findMany(),
-    prisma.workExperience.findMany({ orderBy: { startDate: "desc" } }),
-    prisma.education.findMany({ orderBy: { endYear: "desc" }, take: 1 }),
-    prisma.siteSettings.findUnique({ where: { id: "global" } })
+    prisma.workExperience.findMany({ orderBy: { startDate: 'desc' } }),
+    prisma.education.findMany({ orderBy: { startYear: 'desc' } }),
+    prisma.siteSettings.findFirst(),
   ]);
 
-  const publishedProjects = allProjects.filter(p => p.status === "PUBLISHED");
-  const academicCount = allProjects.filter(p => p.chapter === "ACADEMIC").length;
-  const personalShippedCount = allProjects.filter(p => p.chapter === "PERSONAL" && p.buildStatus === "SHIPPED").length;
-  
-  // Keep the boot sequence targeting the most recent internship
-  const latestInternship = internships[0];
-  const internString = latestInternship 
-    ? `${latestInternship.company}, ${latestInternship.startDate.toISOString().split('T')[0]} - ${latestInternship.endDate ? latestInternship.endDate.toISOString().split('T')[0] : 'Present'}`
-    : "No internships logged.";
+  const chapterKeys = ['ACADEMIC', 'INTERNSHIP', 'CAPSTONE', 'PERSONAL'];
 
-  const chapters = [
-    { key: "ACADEMIC", path: "~/career/academic/" },
-    { key: "INTERNSHIP", path: "~/career/internship/" },
-    { key: "CAPSTONE", path: "~/career/capstone/" },
-    { key: "PERSONAL", path: "~/career/personal/" },
-  ];
+  // Calculate props for the BootSequence component based on database records
+  const academicCount = projects.filter((p) => p.chapter === 'ACADEMIC').length;
+  const personalShippedCount = projects.filter((p) => p.chapter === 'PERSONAL' && p.buildStatus === 'SHIPPED').length;
+  
+  // Format the internship string (e.g., "CCCI, 2025") from the first experience or specifically CCCI
+  const internshipExp = experiences.find((e) => e.company.includes('CCCI')) || experiences[0];
+  const internString = internshipExp 
+    ? `${internshipExp.company.includes('CCCI') ? 'CCCI' : internshipExp.company}, ${new Date(internshipExp.startDate).getFullYear()}`
+    : 'None logged';
 
   return (
-    <main className="max-w-5xl mx-auto px-6 py-20 space-y-24">
-      <Navbar />
-      {/* Boot Sequence & Hero */}
-      <section className="space-y-12 border-b border-line pb-20">
-        <div className="bg-ink text-[#A8A79E] font-mono text-sm p-6 rounded-sm shadow-inner overflow-hidden relative">
-          <div className="flex gap-2 mb-4">
-             <div className="w-3 h-3 rounded-full bg-[#FF5F56]" />
-             <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
-             <div className="w-3 h-3 rounded-full bg-[#27C93F]" />
+    <div className="pb-0">
+      {/* Hero Section */}
+      <section className="max-w-5xl mx-auto px-6 pt-24 pb-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div>
+          <span className="inline-block px-2 py-1 bg-ribbon text-ribbon-ink font-mono text-xs rounded mb-6">
+            Open for freelance work
+          </span>
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-ink leading-tight mb-4">
+            I turn client briefs into shipped, working software.
+          </h1>
+          <p className="text-ink-soft mb-8">
+            Full-stack developer based in the Philippines. I design and build web systems end to end — from database schema to the interface a real user touches.
+          </p>
+          <div className="flex gap-4 mb-12">
+            <a href="#work" className="px-5 py-2.5 bg-ink text-paper rounded-lg font-medium hover:bg-ink/90 transition-colors">
+              View my work
+            </a>
+            <a href="/contact" className="px-5 py-2.5 border border-line text-ink rounded-lg font-medium hover:bg-line/50 transition-colors">
+              Get in touch
+            </a>
           </div>
-          <BootSequence 
-            academicCount={academicCount} 
-            internString={internString} 
-            personalShippedCount={personalShippedCount} 
-          />
-        </div>
-
-        <div className="flex flex-col md:flex-row items-start gap-12 pt-8">
-          <div className="flex-1 space-y-6">
-            <h1 className="text-5xl md:text-6xl font-display font-semibold tracking-tight text-ink">
-              Building high-performance digital architecture.
-            </h1>
-            <p className="text-lg text-ink-soft leading-relaxed max-w-2xl font-body">
-              I design elegant full-stack solutions and optimize complex system models, transforming raw conceptual ideas into reliable, production-grade logic.
-            </p>
-            
-            {/* Stat Bar */}
-            <div className="flex flex-wrap gap-x-8 gap-y-4 pt-4 border-t border-line mt-8">
-              <div className="flex flex-col">
-                <span className="font-mono text-xs text-ink-soft mb-1 uppercase tracking-wider">Total Builds</span>
-                <span className="font-display text-2xl font-semibold">{publishedProjects.length}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-mono text-xs text-ink-soft mb-1 uppercase tracking-wider">Career Suites</span>
-                <span className="font-display text-2xl font-semibold">{chapters.length}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-mono text-xs text-ink-soft mb-1 uppercase tracking-wider">Internships</span>
-                <span className="font-display text-2xl font-semibold">{internships.length}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-mono text-xs text-ink-soft mb-1 uppercase tracking-wider">Graduation</span>
-                <span className="font-display text-2xl font-semibold">{education[0]?.endYear || "----"}</span>
-              </div>
+          
+          {/* Stat bar */}
+          <div className="grid grid-cols-3 gap-4 font-mono text-sm border-t border-line pt-6">
+            <div>
+              <div className="text-2xl font-bold text-ink font-display">{projects.length}</div>
+              <div className="text-ink-soft text-xs mt-1">projects built</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-ink font-display">{experiences.length}</div>
+              <div className="text-ink-soft text-xs mt-1">industry roles</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-ink font-display">2026</div>
+              <div className="text-ink-soft text-xs mt-1">graduating</div>
             </div>
           </div>
+        </div>
+        <div className="hidden md:block">
+          <BootSequence 
+            academicCount={academicCount}
+            internString={internString}
+            personalShippedCount={personalShippedCount}
+          />
+        </div>
+      </section>
 
-          <div className="w-full md:w-1/4 aspect-square bg-card border border-line flex items-center justify-center overflow-hidden grayscale hover:grayscale-0 transition-all duration-500 shrink-0">
-            {settings?.heroPortraitUrl ? (
-              <img src={settings.heroPortraitUrl} alt="Charles" className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-[80%] h-[80%] border border-dashed border-line flex items-center justify-center">
-                <span className="font-mono text-ink-soft text-[10px] tracking-widest uppercase">Null_Ref</span>
+      {/* Work Chapters */}
+      <section id="work" className="max-w-5xl mx-auto px-6 py-12 flex flex-col gap-24">
+        {chapterKeys.map((key) => {
+          const chapterProjects = projects.filter(p => p.chapter === key);
+          const intro = chapters.find(c => c.chapter === key);
+          
+          return (
+            <div key={key}>
+              <div className="mb-8">
+                <div className="text-pass font-mono text-sm mb-2">~/work/{key.toLowerCase()}</div>
+                <h2 className="text-2xl font-display font-bold text-ink mb-2">
+                  {key === 'INTERNSHIP' ? 'Production experience' : 
+                   key === 'ACADEMIC' ? 'Classroom builds' :
+                   key === 'CAPSTONE' ? 'Capstone projects' : 'Self-directed work'}
+                </h2>
+                <p className="text-ink-soft">{intro?.narrative || 'Archived builds and ongoing modules.'}</p>
               </div>
-            )}
+
+              <div className="flex flex-col gap-6">
+                {chapterProjects.length === 0 ? (
+                  <div className="p-8 border border-line border-dashed rounded-xl text-center text-ink-soft font-mono text-sm">
+                    $ no builds logged in this suite
+                  </div>
+                ) : (
+                  chapterProjects.map((project) => (
+                    <ProjectCard
+                      key={project.id}
+                      title={project.title}
+                      description={project.tagline}
+                      badgeStatus={project.buildStatus}
+                      badgeLabel={project.buildStatus === 'SHIPPED' && key === 'INTERNSHIP' ? 'CCCI · 2025' : undefined}
+                      tags={project.techStack ? project.techStack.split(',') : []}
+                      visualLabel={key === 'INTERNSHIP' ? `${project.slug} · internal tools` : `${project.slug}.app`}
+                      href={key === 'INTERNSHIP' ? `/experience/${project.slug}` : `/work/${project.slug}`}
+                    />
+                  ))
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </section>
+
+      {/* About / Timeline Panel */}
+      <section className="bg-ink text-paper py-24 mt-12">
+        <div className="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12">
+          <div>
+            <div className="text-pass font-mono text-sm mb-2">~/about</div>
+            <h2 className="text-3xl font-display font-bold mb-4">How I got here</h2>
+            <p className="text-paper/70">
+              I studied full-stack development the way most engineers do — by shipping things that broke, then fixing them. What stuck with me is finishing: taking a system past the demo, into something someone actually depends on.
+            </p>
+          </div>
+          <div className="flex flex-col">
+            {experiences.map((exp) => (
+              <div key={exp.id} className="grid grid-cols-[80px_1fr] gap-4 py-6 border-b border-paper/10 last:border-0">
+                <div className="font-mono text-sm text-pass">{new Date(exp.startDate).getFullYear()}</div>
+                <div>
+                  <div className="font-bold font-display">{exp.role} at {exp.company}</div>
+                  <div className="text-sm text-paper/60 mt-1">{exp.tagline || 'Experience details pending.'}</div>
+                </div>
+              </div>
+            ))}
+            {education.map((edu) => (
+              <div key={edu.id} className="grid grid-cols-[80px_1fr] gap-4 py-6 border-b border-paper/10 last:border-0">
+                <div className="font-mono text-sm text-paper/50">{edu.endYear}</div>
+                <div>
+                  <div className="font-bold font-display">{edu.degree}</div>
+                  <div className="text-sm text-paper/60 mt-1">{edu.school}</div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Test Suites (Chapters) */}
-      <div className="space-y-24">
-        {chapters.map(({ key, path }) => {
-          const suiteProjects = publishedProjects.filter((p) => p.chapter === key);
-          const draftProjects = allProjects.filter((p) => p.chapter === key && p.status === "DRAFT");
-          const intro = intros.find((i) => i.chapter === key);
-          
-          return (
-            <section key={key} className="space-y-6">
-              <header className="space-y-2">
-                <h2 className="font-mono text-sm font-medium text-ribbon">{path}</h2>
-                <p className="text-ink-soft font-body text-sm max-w-2xl">{intro?.narrative}</p>
-              </header>
-
-              <div className="flex flex-col border-t border-line">
-                {/* INTERCEPT THE INTERNSHIP KEY */}
-                {key === "INTERNSHIP" ? (
-                  internships.length === 0 ? (
-                    <div className="py-6 font-mono text-sm text-ink-soft/60">
-                      <div>// no internships logged in this suite</div>
-                    </div>
-                  ) : (
-                    internships.map((exp) => (
-                      <Link href={`/experience/${exp.slug}`} key={exp.id} className="group block border-b border-line">
-                        <article className="flex flex-col sm:flex-row sm:items-center justify-between py-6 gap-4 group-hover:-translate-y-0.5 group-hover:border-ribbon transition-transform cursor-pointer">
-                          <div className="space-y-1">
-                            <h3 className="font-display text-xl font-medium text-ink group-hover:text-ribbon transition-colors">
-                              {exp.role} <span className="text-ink-soft">@ {exp.company}</span>
-                            </h3>
-                            <p className="font-body text-sm text-ink-soft">{exp.tagline}</p>
-                          </div>
-                          
-                          <div className="shrink-0">
-                            <span className="px-2.5 py-1 text-[10px] font-mono font-medium tracking-wide uppercase bg-card border border-line text-ink-soft rounded-sm">
-                              {new Date(exp.startDate).getFullYear()}
-                            </span>
-                          </div>
-                        </article>
-                      </Link>
-                    ))
-                  )
-                ) : (
-                  /* STANDARD PROJECT RENDERING */
-                  suiteProjects.length === 0 ? (
-                    <div className="py-6 font-mono text-sm text-ink-soft/60">
-                      {draftProjects.length > 0 
-                        ? draftProjects.map(d => <div key={d.id}>// build pending: {d.title}</div>)
-                        : <div>// no builds logged in this suite</div>
-                      }
-                    </div>
-                  ) : (
-                    suiteProjects.map((project) => (
-                      <Link href={`/work/${project.slug}`} key={project.id} className="group block border-b border-line">
-                        <article className="flex flex-col sm:flex-row sm:items-center justify-between py-6 gap-4 group-hover:-translate-y-0.5 group-hover:border-ribbon transition-transform cursor-pointer">
-                          <div className="space-y-1">
-                            <h3 className="font-display text-xl font-medium text-ink group-hover:text-ribbon transition-colors">
-                              {project.title}
-                            </h3>
-                            <p className="font-body text-sm text-ink-soft">{project.tagline}</p>
-                          </div>
-                          
-                          <div className="shrink-0">
-                            {project.buildStatus === "SHIPPED" && (
-                              <span className="px-2.5 py-1 text-[10px] font-mono font-medium tracking-wide uppercase bg-[var(--color-pass-bg)] text-[var(--color-pass)] rounded-sm">Shipped</span>
-                            )}
-                            {project.buildStatus === "IN_PROGRESS" && (
-                              <span className="px-2.5 py-1 text-[10px] font-mono font-medium tracking-wide uppercase bg-[var(--color-pending-bg)] text-[var(--color-pending)] rounded-sm">In Progress</span>
-                            )}
-                            {project.buildStatus === "ARCHIVED" && (
-                              <span className="px-2.5 py-1 text-[10px] font-mono font-medium tracking-wide uppercase bg-card border border-line text-ink-soft rounded-sm">Archived</span>
-                            )}
-                          </div>
-                        </article>
-                      </Link>
-                    ))
-                  )
-                )}
-              </div>
-            </section>
-          );
-        })}
-      </div>
-    </main>
+      {/* Contact CTA Section */}
+      <section className="min-h-[50vh] flex flex-col items-center justify-center px-6 py-24 text-center">
+        <div className="text-pass font-mono text-sm mb-6">~/contact</div>
+        
+        <h2 className="text-4xl md:text-5xl font-display font-bold text-ink mb-4">
+          Have a project in mind?
+        </h2>
+        
+        <p className="text-lg text-ink-soft mb-10 max-w-md mx-auto">
+          I&apos;m currently taking on freelance and contract work. Tell me what you&apos;re building.
+        </p>
+        
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+          <a 
+            href="mailto:contact@cjcp.dev" 
+            className="w-full sm:w-auto px-6 py-3 bg-ink text-paper rounded-lg font-medium hover:bg-ink/90 transition-colors"
+          >
+            Email me
+          </a>
+          <a 
+            href="https://linkedin.com/in/cjcp" 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full sm:w-auto px-6 py-3 bg-transparent border border-line text-ink rounded-lg font-medium hover:bg-line/30 transition-colors"
+          >
+            LinkedIn
+          </a>
+        </div>
+      </section>
+    </div>
   );
 }

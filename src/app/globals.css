@@ -1,51 +1,25 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: var(--font-space-grotesk), sans-serif;
-  --font-mono: var(--font-ibm-plex-mono), monospace;
-  --font-body: var(--font-ibm-plex-sans), sans-serif;
+  --color-paper: #F5F5F0;
+  --color-card: #FFFFFF;
+  --color-ink: #111111;
+  --color-ink-soft: #666666;
+  --color-line: #E5E5E5;
+  --color-ribbon: #E0F2FE;
+  --color-ribbon-ink: #0369A1;
+  --color-pass: #166534;
+  --color-pass-bg: #DCFCE7;
+  --color-pending: #9A3412;
+  --color-pending-bg: #FFEDD5;
 
-  --color-paper: #EFEEE7;
-  --color-card: #FAF9F4;
-  --color-ink: #17160F;
-  --color-ink-soft: #6B6A5E;
-  --color-line: #D9D7C9;
-  --color-ribbon: #B5182F;
-  --color-ribbon-ink: #7A0F1F;
-  
-  --color-pass: #356B44;
-  --color-pass-bg: #E1EADB;
-  --color-pending: #8A6414;
-  --color-pending-bg: #EFE6D2;
+  --font-display: var(--font-space-grotesk);
+  --font-mono: var(--font-ibm-plex-mono);
+  --font-body: var(--font-inter);
 }
 
-@layer base {
-  body {
-    background-color: var(--color-paper);
-    color: var(--color-ink);
-    font-family: var(--font-body);
-  }
-  h1, h2, h3, h4 { font-family: var(--font-display); }
-  code, pre, .font-mono { font-family: var(--font-mono); }
-}
-
-@layer components {
-  .custom-select {
-    @apply appearance-none bg-card border border-line text-ink px-4 py-2.5 pr-10 cursor-pointer focus:outline-none focus:border-ribbon hover:border-ink-soft transition-colors text-sm font-body;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B6A5E'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 1rem;
-  }
-}
-
-@layer utilities {
-  .grain-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.04;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  }
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
 }

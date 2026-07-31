@@ -1,29 +1,33 @@
+import React from 'react';
+
 export default function ContactPage() {
   return (
-    <div className="max-w-2xl mx-auto px-6 py-20 flex-grow flex flex-col justify-center space-y-8">
-      <div className="space-y-4">
-        <h1 className="text-4xl font-bold tracking-tighter">Initialize Connection</h1>
-        <p className="text-muted text-base leading-relaxed">
-          Looking to integrate a reliable engineer into your project workflow, talk systems architecture, or discuss potential software development roles? Reach out directly through the verified communication layers below.
-        </p>
-      </div>
-
-      <div className="grid gap-4 font-mono text-sm pt-4">
+    <div className="min-h-[70vh] flex flex-col items-center justify-center px-6 text-center">
+      <div className="text-pass font-mono text-sm mb-6">~/contact</div>
+      
+      <h1 className="text-4xl md:text-5xl font-display font-bold text-ink mb-4">
+        Have a project in mind?
+      </h1>
+      
+      <p className="text-lg text-ink-soft mb-10 max-w-md mx-auto">
+        I&apos;m currently taking on freelance and contract work. Tell me what you&apos;re building.
+      </p>
+      
+      <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
         <a 
-          href="mailto:charles.postrado@example.com" 
-          className="p-4 rounded border border-surface bg-surface/20 hover:border-accent/60 transition-colors flex items-center justify-between group"
+          href="mailto:contact@cjcp.dev" 
+          className="w-full sm:w-auto px-6 py-3 bg-ink text-paper rounded-lg font-medium hover:bg-ink/90 transition-colors"
         >
-          <span className="text-muted group-hover:text-primary transition-colors">EMAIL //</span>
-          <span className="text-primary text-right break-all">charles.postrado@example.com</span>
+          Email me
         </a>
+        {/* Adapted "View résumé" from the mockup design to the required LinkedIn link requirement */}
         <a 
-          href="https://linkedin.com/in/charles-postrado" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="p-4 rounded border border-surface bg-surface/20 hover:border-accent/60 transition-colors flex items-center justify-between group"
+          href="https://linkedin.com/in/cjcp" 
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full sm:w-auto px-6 py-3 bg-transparent border border-line text-ink rounded-lg font-medium hover:bg-line/30 transition-colors"
         >
-          <span className="text-muted group-hover:text-primary transition-colors">LINKEDIN //</span>
-          <span className="text-primary">linkedin.com/in/charles-postrado</span>
+          LinkedIn
         </a>
       </div>
     </div>

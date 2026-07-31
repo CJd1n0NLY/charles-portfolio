@@ -11,8 +11,6 @@ export default async function HomePage() {
     prisma.siteSettings.findFirst(),
   ]);
 
-  const chapterKeys = ['ACADEMIC', 'INTERNSHIP', 'CAPSTONE', 'PERSONAL'];
-
   // Calculate props for the BootSequence component based on database records
   const academicCount = projects.filter((p) => p.chapter === 'ACADEMIC').length;
   const personalShippedCount = projects.filter((p) => p.chapter === 'PERSONAL' && p.buildStatus === 'SHIPPED').length;
@@ -22,6 +20,42 @@ export default async function HomePage() {
   const internString = internshipExp 
     ? `${internshipExp.company.includes('CCCI') ? 'CCCI' : internshipExp.company}, ${new Date(internshipExp.startDate).getFullYear()}`
     : 'None logged';
+
+  // Helper function to keep the project mapping DRY
+  const renderProjectChapter = (key: string, title: string) => {
+    const chapterProjects = projects.filter(p => p.chapter === key);
+    const intro = chapters.find(c => c.chapter === key);
+    
+    return (
+      <div key={key}>
+        <div className="mb-8">
+          <div className="text-pass font-mono text-sm mb-2">~/work/{key.toLowerCase()}</div>
+          <h2 className="text-2xl font-display font-bold text-ink mb-2">{title}</h2>
+          <p className="text-ink-soft">{intro?.narrative || 'Archived builds and ongoing modules.'}</p>
+        </div>
+
+        <div className="flex flex-col gap-6">
+          {chapterProjects.length === 0 ? (
+            <div className="p-8 border border-line border-dashed rounded-xl text-center text-ink-soft font-mono text-sm">
+              $ no builds logged in this suite
+            </div>
+          ) : (
+            chapterProjects.map((project) => (
+              <ProjectCard
+                key={project.id}
+                title={project.title}
+                description={project.tagline}
+                badgeStatus={project.buildStatus}
+                tags={project.techStack ? project.techStack.split(',') : []}
+                visualLabel={`${project.slug}.app`}
+                href={`/work/${project.slug}`}
+              />
+            ))
+          )}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="pb-0">
@@ -46,7 +80,6 @@ export default async function HomePage() {
             </a>
           </div>
           
-          {/* Stat bar */}
           <div className="grid grid-cols-3 gap-4 font-mono text-sm border-t border-line pt-6">
             <div>
               <div className="text-2xl font-bold text-ink font-display">{projects.length}</div>
@@ -73,45 +106,40 @@ export default async function HomePage() {
 
       {/* Work Chapters */}
       <section id="work" className="max-w-5xl mx-auto px-6 py-12 flex flex-col gap-24">
-        {chapterKeys.map((key) => {
-          const chapterProjects = projects.filter(p => p.chapter === key);
-          const intro = chapters.find(c => c.chapter === key);
-          
-          return (
-            <div key={key}>
-              <div className="mb-8">
-                <div className="text-pass font-mono text-sm mb-2">~/work/{key.toLowerCase()}</div>
-                <h2 className="text-2xl font-display font-bold text-ink mb-2">
-                  {key === 'INTERNSHIP' ? 'Production experience' : 
-                   key === 'ACADEMIC' ? 'Classroom builds' :
-                   key === 'CAPSTONE' ? 'Capstone projects' : 'Self-directed work'}
-                </h2>
-                <p className="text-ink-soft">{intro?.narrative || 'Archived builds and ongoing modules.'}</p>
-              </div>
+        {renderProjectChapter('ACADEMIC', 'Classroom builds')}
 
-              <div className="flex flex-col gap-6">
-                {chapterProjects.length === 0 ? (
-                  <div className="p-8 border border-line border-dashed rounded-xl text-center text-ink-soft font-mono text-sm">
-                    $ no builds logged in this suite
-                  </div>
-                ) : (
-                  chapterProjects.map((project) => (
-                    <ProjectCard
-                      key={project.id}
-                      title={project.title}
-                      description={project.tagline}
-                      badgeStatus={project.buildStatus}
-                      badgeLabel={project.buildStatus === 'SHIPPED' && key === 'INTERNSHIP' ? 'CCCI · 2025' : undefined}
-                      tags={project.techStack ? project.techStack.split(',') : []}
-                      visualLabel={key === 'INTERNSHIP' ? `${project.slug} · internal tools` : `${project.slug}.app`}
-                      href={key === 'INTERNSHIP' ? `/experience/${project.slug}` : `/work/${project.slug}`}
-                    />
-                  ))
-                )}
+        {/* INTERNSHIP Section - Now mapped directly to WorkExperience */}
+        <div>
+          <div className="mb-8">
+            <div className="text-pass font-mono text-sm mb-2">~/work/internship</div>
+            <h2 className="text-2xl font-display font-bold text-ink mb-2">Production experience</h2>
+            <p className="text-ink-soft">Adapting to production environments and shipping real code.</p>
+          </div>
+
+          <div className="flex flex-col gap-6">
+            {experiences.length === 0 ? (
+              <div className="p-8 border border-line border-dashed rounded-xl text-center text-ink-soft font-mono text-sm">
+                $ no builds logged in this suite
               </div>
-            </div>
-          );
-        })}
+            ) : (
+              experiences.map((exp) => (
+                <ProjectCard
+                  key={exp.id}
+                  title={exp.role}
+                  description={exp.company}
+                  badgeStatus="SHIPPED"
+                  badgeLabel={`${exp.company.includes('CCCI') ? 'CCCI' : exp.company} · ${new Date(exp.startDate).getFullYear()}`}
+                  tags={[]} 
+                  visualLabel={`${exp.company.toLowerCase().replace(/[^a-z0-9]+/g, '-')} · internal tools`}
+                  href={`/experience/${exp.slug}`}
+                />
+              ))
+            )}
+          </div>
+        </div>
+
+        {renderProjectChapter('CAPSTONE', 'Capstone projects')}
+        {renderProjectChapter('PERSONAL', 'Self-directed work')}
       </section>
 
       {/* About / Timeline Panel */}

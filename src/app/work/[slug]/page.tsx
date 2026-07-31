@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import Badge from '@/components/Badge';
+import ProjectGallery from '@/components/ProjectGallery';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -8,7 +9,10 @@ type PageProps = {
 
 export default async function WorkDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const project = await prisma.project.findUnique({ where: { slug } });
+  const project = await prisma.project.findUnique({
+    where: { slug },
+    include: { gallery: { orderBy: { order: 'asc' } } },
+  });
 
   if (!project) notFound();
 
@@ -76,6 +80,8 @@ export default async function WorkDetailPage({ params }: PageProps) {
               </p>
             </section>
           )}
+
+          <ProjectGallery images={project.gallery} />
 
           {!project.problem && !project.approach && !project.outcome && (
             <p className="text-ink-soft font-mono text-sm text-center py-8">

@@ -118,10 +118,17 @@ export async function deleteSkill(formData: FormData) {
 export async function saveExperience(formData: FormData) {
   const id = formData.get("id") as string;
   
+  const role = formData.get("role") as string;
+  const company = formData.get("company") as string;
+  
+  // Auto-generate the slug based on the role and company to prevent null links
+  const generatedSlug = `${role}-${company}`.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const slug = (formData.get("slug") as string) || generatedSlug;
+
   const data = {
-    slug: formData.get("slug") as string,
-    company: formData.get("company") as string,
-    role: formData.get("role") as string,
+    slug,
+    company,
+    role,
     location: formData.get("location") as string,
     startDate: new Date(formData.get("startDate") as string),
     endDate: formData.get("endDate") ? new Date(formData.get("endDate") as string) : null,

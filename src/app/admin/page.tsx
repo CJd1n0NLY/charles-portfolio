@@ -15,7 +15,8 @@ export default async function AdminDashboard() {
     orderBy: [{ chapter: "asc" }, { order: "asc" }],
   });
 
-  const chapters = ["ACADEMIC", "INTERNSHIP", "CAPSTONE", "PERSONAL"] as const;
+  // Removed INTERNSHIP from the Project Matrix
+  const chapters = ["ACADEMIC", "CAPSTONE", "PERSONAL"] as const;
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-12 space-y-12 bg-paper text-ink font-body min-h-screen">
@@ -67,7 +68,7 @@ export default async function AdminDashboard() {
             return (
               <div key={chapter} className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-semibold tracking-widest text-ribbon uppercase font-mono">{chapter}</h3>
+                  <h3 className="text-sm font-semibold tracking-widest text-pass uppercase font-mono">{chapter}</h3>
                   <Link 
                     href={`/admin/projects/new`} 
                     className="text-xs font-mono text-ink-soft hover:text-ribbon hover:border-ribbon border border-line bg-card px-3 py-1.5 rounded-sm transition-colors"

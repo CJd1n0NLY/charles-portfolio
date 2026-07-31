@@ -4,8 +4,8 @@ import { useState } from "react";
 import { saveProject, deleteProject } from "../../actions";
 import toast from "react-hot-toast";
 
-// Strict TypeScript enforcement to replace DB Enums
-type ChapterType = "ACADEMIC" | "INTERNSHIP" | "CAPSTONE" | "PERSONAL";
+// Strict TypeScript enforcement - Removed INTERNSHIP
+type ChapterType = "ACADEMIC" | "CAPSTONE" | "PERSONAL";
 type StatusType = "DRAFT" | "PUBLISHED";
 type BuildStatusType = "SHIPPED" | "IN_PROGRESS" | "ARCHIVED";
 
@@ -55,7 +55,6 @@ export default function ProjectFormClient({ initialData }: { initialData: any })
   };
   const removeGalleryImage = (index: number) => setData({ ...data, gallery: data.gallery.filter((_, idx) => idx !== index) });
 
-  // 1. Create a toast wrapper function
   const handleSubmit = async (formData: FormData) => {
     const promise = saveProject(formData);
     
@@ -93,7 +92,6 @@ export default function ProjectFormClient({ initialData }: { initialData: any })
           <input name="title" placeholder="Title" value={data.title} onChange={e => setData({...data, title: e.target.value})} className="bg-card border border-line hover:border-ink-soft focus:border-ribbon p-3 w-full transition-colors rounded-sm" required />
           <select name="chapter" value={data.chapter} onChange={e => setData({...data, chapter: e.target.value as ChapterType})} className="custom-select">
             <option value="ACADEMIC">~/career/academic</option>
-            <option value="INTERNSHIP">~/career/internship</option>
             <option value="CAPSTONE">~/career/capstone</option>
             <option value="PERSONAL">~/career/personal</option>
           </select>

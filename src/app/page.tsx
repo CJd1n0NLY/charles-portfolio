@@ -3,6 +3,26 @@ import BootSequence from '@/components/BootSequence';
 import ProjectCard from '@/components/ProjectCard';
 import Reveal from '@/components/Reveal';
 import ParticleCanvas from '@/components/ParticleCanvas';
+import { 
+  SiReact, 
+  SiNextdotjs, 
+  SiLaravel, 
+  SiPhp, 
+  SiTailwindcss, 
+  SiGooglegemini, 
+  SiMysql, 
+  SiN8N,
+  SiPostgresql,
+  SiPython,
+  SiJavascript,
+  SiTypescript,
+  SiBootstrap,
+  SiFlutter,
+  SiVercel,
+  SiNodedotjs,
+  SiFigma
+} from 'react-icons/si';
+import { FaJava } from 'react-icons/fa';
 
 export default async function HomePage() {
   const [projects, chapters, experiences, education, settings] = await Promise.all([
@@ -13,6 +33,30 @@ export default async function HomePage() {
     prisma.siteSettings.findFirst(),
   ]);
 
+const techStack = [
+    { name: "React", icon: SiReact, color: "#61DAFB" },
+    { name: "Next.js", icon: SiNextdotjs, color: "var(--color-ink)" },
+    { name: "Laravel", icon: SiLaravel, color: "#FF2D20" },
+    { name: "PHP", icon: SiPhp, color: "#777BB4" },
+    { name: "Node.js", icon: SiNodedotjs, color: "#339933" },
+    { name: "Tailwind CSS", icon: SiTailwindcss, color: "#06B6D4" },
+    { name: "Bootstrap", icon: SiBootstrap, color: "#7952B3" },
+    { name: "JavaScript", icon: SiJavascript, color: "#F7DF1E" },
+    { name: "TypeScript", icon: SiTypescript, color: "#3178C6" },
+    { name: "Python", icon: SiPython, color: "#3776AB" },
+    { name: "Java", icon: FaJava, color: "#F8981D" },
+    { name: "MySQL", icon: SiMysql, color: "#4479A1" },
+    { name: "PostgreSQL", icon: SiPostgresql, color: "#336791" },
+    { name: "Gemini API", icon: SiGooglegemini, color: "#8E75B2" },
+    { name: "n8n Workflows", icon: SiN8N, color: "#FF6E67" },
+    { name: "Flutter", icon: SiFlutter, color: "#02569B" },
+    { name: "Figma", icon: SiFigma, color: "#F24E1E" },
+    { name: "Vercel", icon: SiVercel, color: "var(--color-ink)" },
+    { name: "Roboflow", icon: null, color: "#6706CE" },
+    { name: "Paymongo", icon: null, color: "var(--color-pass)" }, 
+    { name: "YOLOv8", icon: null, color: "var(--color-pass)" },   
+  ];
+  
   const academicCount = projects.filter((p) => p.chapter === 'ACADEMIC').length;
   const personalShippedCount = projects.filter((p) => p.chapter === 'PERSONAL' && p.buildStatus === 'SHIPPED').length;
 
@@ -105,27 +149,24 @@ export default async function HomePage() {
       </section>
 
       {/* Tech Stack Marquee */}
-      <section className="w-full border-y border-line bg-card py-4 overflow-hidden flex items-center">
+      <section className="w-full border-y border-line bg-card py-6 overflow-hidden flex items-center">
         <div className="flex whitespace-nowrap animate-marquee">
-          {/* We duplicate the list twice to create the seamless infinite loop effect */}
           {[...Array(2)].map((_, i) => (
-            <div key={i} className="flex gap-12 px-6 items-center font-mono text-sm text-ink-soft/70">
-              <span className="hover:text-pass transition-colors cursor-default">React & Next.js</span>
-              <span className="text-line">•</span>
-              <span className="hover:text-pass transition-colors cursor-default">Laravel & PHP</span>
-              <span className="text-line">•</span>
-              <span className="hover:text-pass transition-colors cursor-default">Tailwind CSS</span>
-              <span className="text-line">•</span>
-              <span className="hover:text-pass transition-colors cursor-default">Gemini API</span>
-              <span className="text-line">•</span>
-              <span className="hover:text-pass transition-colors cursor-default">YOLOv8</span>
-              <span className="text-line">•</span>
-              <span className="hover:text-pass transition-colors cursor-default">MySQL</span>
-              <span className="text-line">•</span>
-              <span className="hover:text-pass transition-colors cursor-default">Java</span>
-              <span className="text-line">•</span>
-              <span className="hover:text-pass transition-colors cursor-default">n8n Workflows</span>
-              <span className="text-line">•</span>
+            <div key={i} className="flex gap-16 px-8 items-center font-mono text-sm text-ink-soft/60">
+              {techStack.map((tech, index) => (
+                <div 
+                  key={index}
+                  // Inject the dynamic color as a CSS variable
+                  style={{ '--hover-color': tech.color } as React.CSSProperties}
+                  // Tailwind applies the variable on hover to both the text and the icon
+                  className="group flex items-center gap-3 transition-colors duration-300 cursor-default hover:text-[var(--hover-color)]"
+                >
+                  {tech.icon && (
+                    <tech.icon className="w-5 h-5 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300" />
+                  )}
+                  <span className="tracking-wide">{tech.name}</span>
+                </div>
+              ))}
             </div>
           ))}
         </div>

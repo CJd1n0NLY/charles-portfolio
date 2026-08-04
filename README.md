@@ -22,7 +22,7 @@ charles-portfolio
 ├─ prisma.config.ts
 ├─ public
 │  ├─ file.svg
-│  ├─ globe.svg
+│  ├─ globe.svg 
 │  ├─ next.svg
 │  ├─ vercel.svg
 │  └─ window.svg
@@ -81,6 +81,7 @@ charles-portfolio
 │  │  ├─ PageTransition.tsx
 │  │  ├─ ProjectCard.tsx
 │  │  ├─ ProjectGallery.tsx
+│  │  ├─ Reveal.tsx
 │  │  ├─ RouteProgress.tsx
 │  │  ├─ SubmitButton.tsx
 │  │  ├─ TimelineScroll.tsx

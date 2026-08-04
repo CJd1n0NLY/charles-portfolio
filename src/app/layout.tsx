@@ -1,6 +1,8 @@
 import { Space_Grotesk, IBM_Plex_Mono, Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import ScrollToTop from '@/components/ScrollToTop';
 import { ReactNode } from 'react';
 import { Toaster } from 'react-hot-toast';
 
@@ -27,11 +29,13 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${ibmPlexMono.variable} ${inter.variable}`}>
-      <body className="antialiased relative min-h-screen">
+    <html lang="en" className={`${spaceGrotesk.variable} ${ibmPlexMono.variable} ${inter.variable} scroll-smooth`}>
+      <body className="antialiased relative min-h-screen flex flex-col">
         <div className="pointer-events-none fixed inset-0 z-50 opacity-20 bg-[url('/grain.png')]" />
         <Navbar />
-        <main>{children}</main>
+        <main className="flex-grow">{children}</main>
+        <Footer />
+        <ScrollToTop />
         <Toaster
           position="bottom-right"
           toastOptions={{

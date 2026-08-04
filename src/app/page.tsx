@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import BootSequence from '@/components/BootSequence';
 import ProjectCard from '@/components/ProjectCard';
 import Reveal from '@/components/Reveal';
+import ParticleCanvas from '@/components/ParticleCanvas';
 
 export default async function HomePage() {
   const [projects, chapters, experiences, education, settings] = await Promise.all([
@@ -61,53 +62,51 @@ export default async function HomePage() {
 
   return (
     <div className="pb-0">
-      {/* Hero Section — no scroll-reveal here; it's above the fold and should be visible immediately */}
-      <section className="max-w-5xl mx-auto px-6 pt-24 pb-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        <div>
-          <span className="inline-block px-2 py-1 bg-ribbon text-ribbon-ink font-mono text-xs rounded mb-6">
-            Open for freelance work
+      {/* Hero Section — Updated to match dark mockup */}
+      <section className="relative min-h-screen flex flex-col items-center justify-center text-center bg-ink text-paper overflow-hidden px-6">
+        {/* Dark theme particle canvas */}
+        <ParticleCanvas className="absolute inset-0 z-0" dotColor="rgba(255,255,255,0.15)" lineColor="255,255,255" />
+        
+        <div className="relative z-10 max-w-6xl mx-auto flex flex-col items-center">
+          <span className="text-pass font-mono text-sm mb-6">
+            $ postrado
           </span>
-          <h1 className="text-4xl md:text-5xl font-display font-bold text-ink leading-tight mb-4">
-            I turn client briefs into shipped, working software.
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold text-paper leading-tight mb-6 tracking-tight">
+            I bring your web projects to life,<br className="hidden md:block" /> from concept to launch.
           </h1>
-          <p className="text-ink-soft mb-8">
-            Full-stack developer based in the Philippines. I design and build web systems end to end — from database schema to the interface a real user touches.
+          <p className="text-paper/70 text-lg md:text-xl mb-10 max-w-2xl">
+            Based in the Philippines, I'm a full-stack developer who takes care of the entire process. I build secure, reliable systems and pair them with clean, intuitive interfaces.
           </p>
-          <div className="flex gap-4 mb-12">
-            <a href="#work" className="px-5 py-2.5 bg-ink text-paper rounded-lg font-medium hover:bg-ink/90 transition-colors">
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+            <a 
+              href="#work" 
+              className="group flex items-center gap-2 px-6 py-3 bg-paper text-ink rounded-lg font-medium transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(245,245,240,0.15)] active:translate-y-0"
+            >
               View my work
+              {/* Arrow that bounces down to indicate scrolling */}
+              <span className="transition-transform duration-300 ease-out group-hover:translate-y-1">
+                &darr;
+              </span>
             </a>
-            <a href="/contact" className="px-5 py-2.5 border border-line text-ink rounded-lg font-medium hover:bg-line/50 transition-colors">
+            <a 
+              href="/contact" 
+              className="px-6 py-3 border border-paper/30 text-paper rounded-lg font-medium transition-all duration-300 hover:-translate-y-1 hover:border-pass hover:text-pass hover:bg-pass/10 active:translate-y-0"
+            >
               Get in touch
             </a>
           </div>
-
-          <div className="grid grid-cols-3 gap-4 font-mono text-sm border-t border-line pt-6">
-            <div>
-              <div className="text-2xl font-bold text-ink font-display">{projects.length}</div>
-              <div className="text-ink-soft text-xs mt-1">projects built</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-ink font-display">{experiences.length}</div>
-              <div className="text-ink-soft text-xs mt-1">industry roles</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-ink font-display">2026</div>
-              <div className="text-ink-soft text-xs mt-1">graduating</div>
-            </div>
-          </div>
         </div>
-        <div className="hidden md:block">
-          <BootSequence
-            academicCount={academicCount}
-            internString={internString}
-            personalShippedCount={personalShippedCount}
-          />
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-12 flex flex-col items-center text-paper/40 font-mono text-xs gap-4 animate-pulse">
+          <span>scroll</span>
+          <div className="w-[1px] h-8 bg-paper/40"></div>
         </div>
       </section>
 
       {/* Work Chapters */}
       <section id="work" className="max-w-5xl mx-auto px-6 py-12 flex flex-col gap-24">
+        <ParticleCanvas className="absolute inset-0 -z-10" dotColor="rgba(17,17,17,0.35)" lineColor="22,101,52" />
         {renderProjectChapter('ACADEMIC', 'Classroom builds')}
 
         <div>
@@ -142,19 +141,20 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {renderProjectChapter('CAPSTONE', 'Capstone projects')}
+        {renderProjectChapter('CAPSTONE', 'Capstone project')}
         {renderProjectChapter('PERSONAL', 'Self-directed work')}
       </section>
 
       {/* About / Timeline Panel */}
       <section className="bg-ink text-paper py-24 mt-12">
+        <ParticleCanvas className="absolute inset-0 -z-10" dotColor="rgba(17,17,17,0.35)" lineColor="22,101,52" />
         <div className="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12">
           <Reveal>
             <div>
               <div className="text-pass font-mono text-sm mb-2">~/about</div>
               <h2 className="text-3xl font-display font-bold mb-4">How I got here</h2>
               <p className="text-paper/70">
-                I studied full-stack development the way most engineers do — by shipping things that broke, then fixing them. What stuck with me is finishing: taking a system past the demo, into something someone actually depends on.
+                I am driven by the creative process of taking an idea from concept to life. I build full-stack systems designed for maximum efficiency, frequently utilizing AI tools like the Gemini API and machine learning models—orchestrated through n8n workflows—to boost performance. For me, development is about pushing boundaries and shipping software that actually thinks and scales.
               </p>
             </div>
           </Reveal>
@@ -188,6 +188,7 @@ export default async function HomePage() {
       {/* Contact CTA Section */}
       <Reveal>
         <section className="min-h-[50vh] flex flex-col items-center justify-center px-6 py-24 text-center">
+          <ParticleCanvas className="absolute inset-0 -z-10" dotColor="rgba(17,17,17,0.35)" lineColor="22,101,52" />
           <div className="text-pass font-mono text-sm mb-6">~/contact</div>
 
           <h2 className="text-4xl md:text-5xl font-display font-bold text-ink mb-4">
@@ -201,15 +202,19 @@ export default async function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
             <a
               href="mailto:charlespostrado14@gmail.com"
-              className="w-full sm:w-auto px-6 py-3 bg-ink text-paper rounded-lg font-medium hover:bg-ink/90 transition-colors"
+              className="group flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-ink text-paper rounded-lg font-medium transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-ink/20 active:translate-y-0"
             >
               Email me
+              {/* Arrow that shifts right to prompt action */}
+              <span className="transition-transform duration-300 ease-out group-hover:translate-x-1">
+                &rarr;
+              </span>
             </a>
             <a
               href="https://www.linkedin.com/in/charles-jacob-postrado-096844360/"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto px-6 py-3 bg-transparent border border-line text-ink rounded-lg font-medium hover:bg-line/30 transition-colors"
+              className="w-full sm:w-auto px-6 py-3 bg-transparent border border-line text-ink rounded-lg font-medium transition-all duration-300 hover:-translate-y-1 hover:border-pass hover:text-pass hover:bg-pass/5 hover:shadow-sm active:translate-y-0"
             >
               LinkedIn
             </a>

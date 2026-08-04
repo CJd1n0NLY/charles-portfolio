@@ -106,9 +106,8 @@ const techStack = [
 
   return (
     <div className="pb-0">
-      {/* Hero Section — Updated to match dark mockup */}
+      {/* Hero Section */}
       <section className="relative min-h-screen flex flex-col items-center justify-center text-center bg-ink text-paper overflow-hidden px-6">
-        {/* Dark theme particle canvas */}
         <ParticleCanvas className="absolute inset-0 z-0" dotColor="rgba(255,255,255,0.15)" lineColor="255,255,255" />
         
         <div className="relative z-10 max-w-6xl mx-auto flex flex-col items-center">
@@ -127,7 +126,6 @@ const techStack = [
               className="group flex items-center gap-2 px-6 py-3 bg-paper text-ink rounded-lg font-medium transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(245,245,240,0.15)] active:translate-y-0"
             >
               View my work
-              {/* Arrow that bounces down to indicate scrolling */}
               <span className="transition-transform duration-300 ease-out group-hover:translate-y-1">
                 &darr;
               </span>
@@ -141,7 +139,6 @@ const techStack = [
           </div>
         </div>
 
-        {/* Scroll Indicator */}
         <div className="absolute bottom-12 flex flex-col items-center text-paper/40 font-mono text-xs gap-4 animate-pulse">
           <span>scroll</span>
           <div className="w-[1px] h-8 bg-paper/40"></div>
@@ -156,9 +153,7 @@ const techStack = [
               {techStack.map((tech, index) => (
                 <div 
                   key={index}
-                  // Inject the dynamic color as a CSS variable
                   style={{ '--hover-color': tech.color } as React.CSSProperties}
-                  // Tailwind applies the variable on hover to both the text and the icon
                   className="group flex items-center gap-3 transition-colors duration-300 cursor-default hover:text-[var(--hover-color)]"
                 >
                   {tech.icon && (
@@ -173,7 +168,7 @@ const techStack = [
       </section>
 
       {/* Work Chapters */}
-      <section id="work" className="max-w-5xl mx-auto px-6 py-12 flex flex-col gap-24">
+      <section id="work" className="relative max-w-5xl mx-auto px-6 py-12 flex flex-col gap-24">
         <ParticleCanvas className="absolute inset-0 -z-10" dotColor="rgba(17,17,17,0.35)" lineColor="22,101,52" />
         {renderProjectChapter('ACADEMIC', 'Classroom builds')}
 
@@ -214,38 +209,53 @@ const techStack = [
       </section>
 
       {/* About / Timeline Panel */}
-      <section className="bg-ink text-paper py-24 mt-12">
-        <ParticleCanvas className="absolute inset-0 -z-10" dotColor="rgba(17,17,17,0.35)" lineColor="22,101,52" />
-        <div className="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12">
+      <section className="relative bg-ink text-paper py-24 mt-12">
+        {/* Adjusted canvas contrast for dark background */}
+        <ParticleCanvas className="absolute inset-0 z-0" dotColor="rgba(255,255,255,0.15)" lineColor="255,255,255" />
+        
+        <div className="relative z-10 max-w-5xl mx-auto px-6">
           <Reveal>
-            <div>
-              <div className="text-pass font-mono text-sm mb-2">~/about</div>
-              <h2 className="text-3xl font-display font-bold mb-4">How I got here</h2>
-              <p className="text-paper/70">
-                I am driven by the creative process of taking an idea from concept to life. I build full-stack systems designed for maximum efficiency, frequently utilizing AI tools like the Gemini API and machine learning models—orchestrated through n8n workflows—to boost performance. For me, development is about pushing boundaries and shipping software that actually thinks and scales.
-              </p>
+            {/* Header row with inline avatar */}
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-6 mb-8">
+              <div className="relative w-24 h-24 sm:w-32 sm:h-32 shrink-0 rounded-full overflow-hidden border-2 border-paper/10 group shadow-xl">
+                <div className="absolute inset-0 bg-pass/20 mix-blend-overlay z-10 group-hover:opacity-0 transition-opacity duration-500"></div>
+                <img 
+                  src="/profile.png" 
+                  alt="Charles Jacob C. Postrado" 
+                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                />
+              </div>
+
+              <div>
+                <div className="text-pass font-mono text-sm mb-2">~/about</div>
+                <h2 className="text-4xl md:text-5xl font-display font-bold">How I got here</h2>
+              </div>
             </div>
+
+            {/* Full width bio text */}
+            <p className="text-paper/70 text-lg max-w-3xl mb-16 leading-relaxed">
+              I am driven by the creative process of taking an idea from concept to life. I build full-stack systems designed for maximum efficiency, frequently utilizing AI tools like the Gemini API and machine learning models—orchestrated through n8n workflows—to boost performance. For me, development is about pushing boundaries and shipping software that actually thinks and scales.
+            </p>
           </Reveal>
-          <div className="flex flex-col">
+
+          {/* Timeline Grid layout instead of a single narrow column */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
             {experiences.map((exp, i) => (
               <Reveal key={exp.id} delay={i * 0.06}>
-                <div className="grid grid-cols-[80px_1fr] gap-4 py-6 border-b border-paper/10 last:border-0">
-                  <div className="font-mono text-sm text-pass">{new Date(exp.startDate).getFullYear()}</div>
-                  <div>
-                    <div className="font-bold font-display">{exp.role} at {exp.company}</div>
-                    <div className="text-sm text-paper/60 mt-1">{exp.tagline || 'Experience details pending.'}</div>
-                  </div>
+                <div className="flex flex-col gap-1 py-4 border-t border-paper/10 h-full">
+                  <div className="font-mono text-sm text-pass mb-1">{new Date(exp.startDate).getFullYear()}</div>
+                  <div className="font-bold font-display text-lg">{exp.role}</div>
+                  <div className="text-sm text-paper/60">{exp.company} — {exp.tagline || 'Experience details pending.'}</div>
                 </div>
               </Reveal>
             ))}
+            
             {education.map((edu, i) => (
               <Reveal key={edu.id} delay={(experiences.length + i) * 0.06}>
-                <div className="grid grid-cols-[80px_1fr] gap-4 py-6 border-b border-paper/10 last:border-0">
-                  <div className="font-mono text-sm text-paper/50">{edu.endYear}</div>
-                  <div>
-                    <div className="font-bold font-display">{edu.degree}</div>
-                    <div className="text-sm text-paper/60 mt-1">{edu.school}</div>
-                  </div>
+                <div className="flex flex-col gap-1 py-4 border-t border-paper/10 h-full">
+                  <div className="font-mono text-sm text-paper/50 mb-1">{edu.endYear}</div>
+                  <div className="font-bold font-display text-lg">{edu.degree}</div>
+                  <div className="text-sm text-paper/60">{edu.school}</div>
                 </div>
               </Reveal>
             ))}
@@ -255,7 +265,7 @@ const techStack = [
 
       {/* Contact CTA Section */}
       <Reveal>
-        <section className="min-h-[50vh] flex flex-col items-center justify-center px-6 py-24 text-center">
+        <section className="relative min-h-[50vh] flex flex-col items-center justify-center px-6 py-24 text-center">
           <ParticleCanvas className="absolute inset-0 -z-10" dotColor="rgba(17,17,17,0.35)" lineColor="22,101,52" />
           <div className="text-pass font-mono text-sm mb-6">~/contact</div>
 
@@ -273,7 +283,6 @@ const techStack = [
               className="group flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-ink text-paper rounded-lg font-medium transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-ink/20 active:translate-y-0"
             >
               Email me
-              {/* Arrow that shifts right to prompt action */}
               <span className="transition-transform duration-300 ease-out group-hover:translate-x-1">
                 &rarr;
               </span>

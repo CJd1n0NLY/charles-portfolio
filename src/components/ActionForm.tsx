@@ -12,14 +12,18 @@ interface ActionFormProps {
 
 export default function ActionForm({ action, successMessage, className, children }: ActionFormProps) {
   const handleSubmit = async (formData: FormData) => {
+    const promise = action(formData);
+
+    toast.promise(promise, {
+      loading: 'Executing...',
+      success: successMessage,
+      error: 'Operation failed.',
+    });
+
     try {
-      const promise = action(formData);
-      toast.promise(promise, {
-        loading: 'Executing...',
-        success: successMessage,
-        error: 'Operation failed.',
-      });
+      await promise;
     } catch (e) {
+      // toast.promise already surfaced this to the user.
       console.error(e);
     }
   };

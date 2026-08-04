@@ -4,6 +4,7 @@ import { useState } from "react";
 import { saveExperience, deleteExperience } from "../actions";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import SubmitButton from "@/components/SubmitButton";
 
 export default function ExperienceClient({ experiences }: { experiences: any[] }) {
   const [data, setData] = useState({
@@ -20,11 +21,13 @@ export default function ExperienceClient({ experiences }: { experiences: any[] }
   const handleSubmit = async (formData: FormData) => {
     const promise = saveExperience(formData);
     toast.promise(promise, { loading: 'Committing record...', success: 'Record logged!', error: 'Failed.' });
+    try { await promise; } catch { /* toast.promise already reported this */ }
   };
 
   const handleDelete = async (formData: FormData) => {
     const promise = deleteExperience(formData);
     toast.promise(promise, { loading: 'Deleting...', success: 'Deleted!', error: 'Failed.' });
+    try { await promise; } catch { /* toast.promise already reported this */ }
   };
 
   return (
@@ -69,7 +72,7 @@ export default function ExperienceClient({ experiences }: { experiences: any[] }
           <button type="button" onClick={addBullet} className="w-full p-3 border border-dashed border-line text-ink-soft hover:text-ribbon text-xs font-mono uppercase cursor-pointer transition-colors">+ Add Bullet</button>
         </div>
 
-        <button type="submit" className="bg-ribbon hover:bg-ribbon-ink text-card px-6 py-3 font-medium text-sm w-full transition-colors cursor-pointer rounded-sm">Commit Record</button>
+        <SubmitButton label="Commit Record" pendingLabel="Committing record..." className="w-full" />
       </form>
 
       {/* List Existing Experience */}
@@ -82,7 +85,7 @@ export default function ExperienceClient({ experiences }: { experiences: any[] }
             </div>
             <form action={handleDelete}>
               <input type="hidden" name="id" value={exp.id} />
-              <button type="submit" className="text-ink-soft hover:text-ribbon text-xs font-mono cursor-pointer transition-colors">DEL</button>
+              <SubmitButton label="DEL" pendingLabel="..." variant="ghost" />
             </form>
           </div>
         ))}

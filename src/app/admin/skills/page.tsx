@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { saveSkill, deleteSkill } from "../actions";
 import Link from "next/link";
 import ActionForm from "@/components/ActionForm";
+import SubmitButton from "@/components/SubmitButton";
 
 export default async function SkillsAdmin() {
   const skills = await prisma.skill.findMany({ orderBy: { name: "asc" } });
@@ -25,7 +26,7 @@ export default async function SkillsAdmin() {
           <select name="category" className="custom-select">
             {categories.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
-          <button type="submit" className="bg-ribbon hover:bg-ribbon-ink transition-colors text-card px-6 font-medium text-sm cursor-pointer rounded-sm">Execute</button>
+          <SubmitButton label="Execute" pendingLabel="Executing..." />
         </ActionForm>
       </section>
 
@@ -44,7 +45,7 @@ export default async function SkillsAdmin() {
                     <span className="text-sm font-medium truncate">{skill.name}</span>
                     <ActionForm action={deleteSkill} successMessage="Skill deleted!" className="shrink-0">
                       <input type="hidden" name="id" value={skill.id} />
-                      <button type="submit" className="text-ink-soft hover:text-ribbon font-mono text-xs cursor-pointer transition-colors px-2">DEL</button>
+                      <SubmitButton label="DEL" pendingLabel="..." variant="ghost" />
                     </ActionForm>
                   </div>
                 ))}

@@ -74,10 +74,17 @@ charles-portfolio
 │  │        └─ page.tsx
 │  ├─ components
 │  │  ├─ ActionForm.tsx
+│  │  ├─ Badge.tsx
 │  │  ├─ BootSequence.tsx
 │  │  ├─ LogoutButton.tsx
 │  │  ├─ Navbar.tsx
-│  │  └─ TimelineScroll.tsx
+│  │  ├─ PageTransition.tsx
+│  │  ├─ ProjectCard.tsx
+│  │  ├─ ProjectGallery.tsx
+│  │  ├─ RouteProgress.tsx
+│  │  ├─ SubmitButton.tsx
+│  │  ├─ TimelineScroll.tsx
+│  │  └─ ToggleStatusButton.tsx
 │  ├─ lib
 │  │  └─ prisma.ts
 │  └─ middleware.ts

@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { toggleProjectStatus } from "./actions";
 import LogoutButton from "@/components/LogoutButton";
 import Link from "next/link";
+import ToggleStatusButton from "@/components/ToggleStatusButton";
 
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
@@ -98,16 +99,7 @@ export default async function AdminDashboard() {
                             <form action={toggleProjectStatus}>
                               <input type="hidden" name="id" value={project.id} />
                               <input type="hidden" name="status" value={project.status} />
-                              <button 
-                                type="submit"
-                                className={`px-3 py-1.5 text-[10px] font-mono font-semibold tracking-wide uppercase rounded-sm transition-colors cursor-pointer ${
-                                  project.status === "PUBLISHED" 
-                                    ? "bg-[var(--color-pass-bg)] text-[var(--color-pass)] border border-[var(--color-pass-bg)] hover:bg-[var(--color-pass)] hover:text-white" 
-                                    : "bg-paper text-ink-soft border border-line hover:text-ink hover:border-ink-soft"
-                                }`}
-                              >
-                                VISIBILITY: {project.status}
-                              </button>
+                              <ToggleStatusButton status={project.status} />
                             </form>
                           </div>
                         </div>

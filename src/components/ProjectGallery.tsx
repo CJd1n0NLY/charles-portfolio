@@ -64,7 +64,7 @@ export default function ProjectGallery({ images }: { images: GalleryImage[] }) {
                   src={img.url}
                   alt={img.altText}
                   fill
-                  sizes="256px"
+                  sizes="(max-width: 640px) 80vw, 256px"
                   className="object-cover"
                 />
               </div>
@@ -109,7 +109,7 @@ export default function ProjectGallery({ images }: { images: GalleryImage[] }) {
                 src={images[openIndex].url}
                 alt={images[openIndex].altText}
                 fill
-                sizes="100vw"
+                sizes="(max-width: 896px) 100vw, 896px"
                 className="object-contain bg-ink"
                 priority
               />

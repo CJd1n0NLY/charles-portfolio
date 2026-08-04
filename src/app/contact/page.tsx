@@ -15,14 +15,14 @@ export default function ContactPage() {
       
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
         <a 
-          href="mailto:contact@cjcp.dev" 
+          href="mailto:charlespostrado14@gmail.com" 
           className="w-full sm:w-auto px-6 py-3 bg-ink text-paper rounded-lg font-medium hover:bg-ink/90 transition-colors"
         >
           Email me
         </a>
         {/* Adapted "View résumé" from the mockup design to the required LinkedIn link requirement */}
         <a 
-          href="https://linkedin.com/in/cjcp" 
+          href="https://www.linkedin.com/in/charles-jacob-postrado-096844360/" 
           target="_blank"
           rel="noopener noreferrer"
           className="w-full sm:w-auto px-6 py-3 bg-transparent border border-line text-ink rounded-lg font-medium hover:bg-line/30 transition-colors"

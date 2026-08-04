@@ -1,9 +1,8 @@
 import { Space_Grotesk, IBM_Plex_Mono, Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
-import PageTransition from '@/components/PageTransition';
-import RouteProgress from '@/components/RouteProgress';
 import { ReactNode } from 'react';
+import { Toaster } from 'react-hot-toast';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -31,12 +30,33 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" className={`${spaceGrotesk.variable} ${ibmPlexMono.variable} ${inter.variable}`}>
       <body className="antialiased relative min-h-screen">
         <div className="pointer-events-none fixed inset-0 z-50 opacity-20 bg-[url('/grain.png')]" />
-        <RouteProgress />
         <Navbar />
-        <main>
-          <PageTransition>{children}</PageTransition>
-        </main>
-        {/* Toast Provider would go here */}
+        <main>{children}</main>
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: 'var(--color-ink)',
+              color: 'var(--color-paper)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '13px',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: '6px',
+            },
+            success: {
+              iconTheme: {
+                primary: 'var(--color-pass)',
+                secondary: 'var(--color-ink)',
+              },
+            },
+            error: {
+              iconTheme: {
+                primary: 'var(--color-ribbon-ink)',
+                secondary: 'var(--color-ink)',
+              },
+            },
+          }}
+        />
       </body>
     </html>
   );

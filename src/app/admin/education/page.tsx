@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { saveEducation, deleteEducation } from "../actions";
 import Link from "next/link";
 import ActionForm from "@/components/ActionForm";
+import SubmitButton from "@/components/SubmitButton";
 
 export default async function EducationAdmin() {
   const education = await prisma.education.findMany({ orderBy: { endYear: "desc" } });
@@ -28,7 +29,7 @@ export default async function EducationAdmin() {
             <input type="number" name="startYear" placeholder="Start Year" required className="bg-paper p-3 border border-line focus:border-ribbon outline-none transition-colors text-sm w-full rounded-sm" />
             <input type="number" name="endYear" placeholder="End Year" required className="bg-paper p-3 border border-line focus:border-ribbon outline-none transition-colors text-sm w-full rounded-sm" />
           </div>
-          <button type="submit" className="bg-ribbon hover:bg-ribbon-ink text-card px-6 py-3 font-medium text-sm w-full transition-colors cursor-pointer rounded-sm">Commit Record</button>
+          <SubmitButton label="Commit Record" pendingLabel="Committing record..." className="w-full" />
         </ActionForm>
       </section>
 
@@ -43,7 +44,7 @@ export default async function EducationAdmin() {
             </div>
             <ActionForm action={deleteEducation} successMessage="Record deleted!">
               <input type="hidden" name="id" value={ed.id} />
-              <button type="submit" className="text-ink-soft hover:text-ribbon font-mono text-xs transition-colors cursor-pointer">DEL</button>
+              <SubmitButton label="DEL" pendingLabel="..." variant="ghost" />
             </ActionForm>
           </div>
         ))}

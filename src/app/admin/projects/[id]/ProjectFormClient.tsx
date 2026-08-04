@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { saveProject, deleteProject } from "../../actions";
 import toast from "react-hot-toast";
+import SubmitButton from "@/components/SubmitButton";
 
 // Strict TypeScript enforcement - Removed INTERNSHIP
 type ChapterType = "ACADEMIC" | "CAPSTONE" | "PERSONAL";
@@ -63,6 +64,14 @@ export default function ProjectFormClient({ initialData }: { initialData: any })
       success: 'Build logged successfully!',
       error: 'Failed to commit build.',
     });
+
+    // Let the toast surface the actual outcome, but don't leave the button
+    // spinner hanging if the action throws.
+    try {
+      await promise;
+    } catch {
+      // toast.promise already reports this — nothing further to do here.
+    }
   };
 
   return (
@@ -143,7 +152,7 @@ export default function ProjectFormClient({ initialData }: { initialData: any })
         </div>
 
         <div className="pt-8">
-          <button type="submit" className="bg-ribbon hover:bg-ribbon-ink text-card px-8 py-3 font-medium transition-colors cursor-pointer rounded-sm">Commit Build</button>
+          <SubmitButton label="Commit Build" pendingLabel="Committing build..." />
         </div>
       </form>
     </div>

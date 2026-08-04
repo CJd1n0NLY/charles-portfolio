@@ -104,6 +104,33 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Tech Stack Marquee */}
+      <section className="w-full border-y border-line bg-card py-4 overflow-hidden flex items-center">
+        <div className="flex whitespace-nowrap animate-marquee">
+          {/* We duplicate the list twice to create the seamless infinite loop effect */}
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="flex gap-12 px-6 items-center font-mono text-sm text-ink-soft/70">
+              <span className="hover:text-pass transition-colors cursor-default">React & Next.js</span>
+              <span className="text-line">•</span>
+              <span className="hover:text-pass transition-colors cursor-default">Laravel & PHP</span>
+              <span className="text-line">•</span>
+              <span className="hover:text-pass transition-colors cursor-default">Tailwind CSS</span>
+              <span className="text-line">•</span>
+              <span className="hover:text-pass transition-colors cursor-default">Gemini API</span>
+              <span className="text-line">•</span>
+              <span className="hover:text-pass transition-colors cursor-default">YOLOv8</span>
+              <span className="text-line">•</span>
+              <span className="hover:text-pass transition-colors cursor-default">MySQL</span>
+              <span className="text-line">•</span>
+              <span className="hover:text-pass transition-colors cursor-default">Java</span>
+              <span className="text-line">•</span>
+              <span className="hover:text-pass transition-colors cursor-default">n8n Workflows</span>
+              <span className="text-line">•</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Work Chapters */}
       <section id="work" className="max-w-5xl mx-auto px-6 py-12 flex flex-col gap-24">
         <ParticleCanvas className="absolute inset-0 -z-10" dotColor="rgba(17,17,17,0.35)" lineColor="22,101,52" />

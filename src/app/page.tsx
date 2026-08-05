@@ -107,7 +107,7 @@ const techStack = [
   return (
     <div className="pb-0">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center text-center bg-ink text-paper overflow-hidden px-6">
+      <section className="relative min-h-screen flex flex-col items-center justify-center text-center bg-ink text-paper overflow-hidden px-6 py-24">
         <ParticleCanvas className="absolute inset-0 z-0" dotColor="rgba(255,255,255,0.15)" lineColor="255,255,255" />
         
         <div className="relative z-10 max-w-6xl mx-auto flex flex-col items-center">
@@ -137,11 +137,11 @@ const techStack = [
               Get in touch
             </a>
           </div>
-        </div>
 
-        <div className="absolute bottom-12 flex flex-col items-center text-paper/40 font-mono text-xs gap-4 animate-pulse">
-          <span>scroll</span>
-          <div className="w-[1px] h-8 bg-paper/40"></div>
+          <div className="mt-16 flex flex-col items-center text-paper/40 font-mono text-xs gap-4 animate-pulse">
+            <span>scroll</span>
+            <div className="w-[1px] h-8 bg-paper/40"></div>
+          </div>
         </div>
       </section>
 

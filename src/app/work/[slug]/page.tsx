@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Badge from '@/components/Badge';
 import ProjectGallery from '@/components/ProjectGallery';
 import Reveal from '@/components/Reveal';
+import ExpandableText from '@/components/ExpandableText';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -56,9 +57,7 @@ export default async function WorkDetailPage({ params }: PageProps) {
                   <span className="w-4 h-px bg-line inline-block" />
                   The Problem
                 </h3>
-                <p className="text-ink-soft leading-relaxed whitespace-pre-wrap">
-                  {project.problem}
-                </p>
+                <ExpandableText text={project.problem} lines={6} />
               </section>
             </Reveal>
           )}
@@ -70,9 +69,7 @@ export default async function WorkDetailPage({ params }: PageProps) {
                   <span className="w-4 h-px bg-line inline-block" />
                   The Approach
                 </h3>
-                <p className="text-ink-soft leading-relaxed whitespace-pre-wrap">
-                  {project.approach}
-                </p>
+                <ExpandableText text={project.approach} lines={6} />
               </section>
             </Reveal>
           )}
@@ -84,9 +81,7 @@ export default async function WorkDetailPage({ params }: PageProps) {
                   <span className="w-4 h-px bg-line inline-block" />
                   The Outcome
                 </h3>
-                <p className="text-ink-soft leading-relaxed whitespace-pre-wrap">
-                  {project.outcome}
-                </p>
+                <ExpandableText text={project.outcome} lines={6} />
               </section>
             </Reveal>
           )}
@@ -105,9 +100,7 @@ export default async function WorkDetailPage({ params }: PageProps) {
                         <h4 className="font-mono text-sm font-semibold text-ink mb-1.5">
                           {challenge.title}
                         </h4>
-                        <p className="text-ink-soft leading-relaxed whitespace-pre-wrap text-sm">
-                          {challenge.description}
-                        </p>
+                        <ExpandableText text={challenge.description} lines={4} className="text-sm" />
                       </div>
                     </Reveal>
                   ))}
